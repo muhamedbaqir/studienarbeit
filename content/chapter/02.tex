@@ -1,1 +1,9 @@
 \chapter{Operating system resilience}
+Laprie describes resilience as "the persistence of dependability when facing changes", with "dependability" expressing trust in a systems delivery of a service.
+So in simpler terms, resilience is a system's ability to function despite unexpected changes.
+
+The aspect of "unexpected changes" introduces one major difficulty, which is that simply ensuring program correctness does not provide adequate resilience. To formally prove a programs correctness, and thus its ability to not enter any unexpected states, one would have to assume an assembly interpreter which is impossible to fail. While modern CPUs and their peripherals are extremely resiliant, failures of instruction execution and data integrity do happen. 
+
+Hardware limitations however are simply our scapegoat of choice, for the impossibility of achieving a 100 percent resilience. More often than not human error is the main cause of behavioral errors. For example, the majority of vulnerabilities were memory corruption bugs \cite{white house}
+
+In the following, we will analyse the general responsiblities of an operating system and their potential errors. This might seem contradictory to the general definition of resilience, since "unexpected changes" cannot be prepared for (since they are unexpected), but here we are building an understanding of the functionality, which we are trying to protect. 
