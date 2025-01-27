@@ -1,9 +1,12 @@
-\chapter{Macro-Kernel Resilience}
+\chapter{Operating System Resilience}
 Laprie describes resilience as "the persistence of dependability when facing changes", with "dependability" expressing trust in a systems delivery of a service.
 So in simpler terms, resilience is a system's ability to function despite unexpected changes.
 
 The aspect of "unexpected changes" introduces one major difficulty, which is that simply ensuring program correctness does not provide adequate resilience. To formally prove a programs correctness, and thus its ability to not enter any unexpected states, one would have to assume a code executor which is impossible to fail. While modern CPUs and their peripherals are extremely resiliant, failures of instruction execution and data integrity do happen. 
 
-Hardware limitations however are simply our scapegoat of choice, for the impossibility of achieving a 100 percent resilience. Human errors are a frequent cause of failures \cite{nq} and must be factored into the design of any critical system. A System's hardware is not necessarily its failing point: Technologies like ECC memory, RAID storage or TCP packet management help deal with hardware faults without resulting in a failure. Thus, designing resilient software is a critical aspect of kernel development. 
+Hardware limitations however are simply the scapegoat of choice for an impossible hundred percent resilience. Programming errors and their resulting faults are more common. Especially with a larger codebase, the number of bugs increases linearly \cite{nq}.
 
-Since the Linux kernel is a Macro-kernel, our following
+And hardware faults do not always result in a failure: RAID setups protect against disk failures, ECC memory insures data integrity and the TCP protocol can detect and react to package loss.
+Similar to how a computer system's hardware is designed to mitigate and react to faults, its operating software should be fault-tolerant too. 
+
+In the scope of the Linux kernel, and its family of operating systems, we have a broad facette of uses. The broad use spectrum differentiates Linux from other forms of sofware in a significant fashion: The Kernel's design cannot be constrained to one architecture or type of system. This widens the area of faults and failures, requiring our analysis to consider the variety of usecases.
