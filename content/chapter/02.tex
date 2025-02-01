@@ -1,4 +1,5 @@
 \chapter{Operating System Resilience}
+\section{Understanding Resilience}
 Laprie describes resilience as "the persistence of dependability when facing changes", with "dependability" expressing trust in a systems delivery of a service.
 So in simpler terms, resilience is a system's ability to function despite unexpected changes.
 
@@ -9,4 +10,9 @@ Hardware limitations however are simply the scapegoat of choice for an impossibl
 And hardware faults do not always result in a failure: RAID setups protect against disk failures, ECC memory insures data integrity and the TCP protocol can detect and react to package loss.
 Similar to how a computer system's hardware is designed to mitigate and react to faults, its operating software should be fault-tolerant too. 
 
+Our research is based on the hypothesis, that Linux implements resilience patterns to handle software faults. Due to that, we will exclude hardware faults from our research scope.
+
+\section{Linux as a general purpose Kernel}
 In the scope of the Linux kernel, and its family of operating systems, we have a broad facette of uses. The broad use spectrum differentiates Linux from other forms of sofware in a significant fashion: The Kernel's design cannot be constrained to one architecture or type of system. This widens the area of faults and failures, requiring our analysis to consider the variety of usecases.
+
+\section{Categorizing Software faults}
