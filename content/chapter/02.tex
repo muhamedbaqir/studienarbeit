@@ -3,7 +3,7 @@
 Laprie describes resilience as "the persistence of dependability when facing changes", with "dependability" expressing trust in a systems delivery of a service.
 So in simpler terms, resilience is a system's ability to function despite unexpected changes.
 
-The aspect of "unexpected changes" introduces one major difficulty, which is that simply ensuring program correctness does not provide adequate resilience. To formally prove a programs correctness, and thus its ability to not enter any unexpected states, one would have to assume a code executor which is impossible to fail. While modern CPUs and their peripherals are extremely resiliant, failures of instruction execution and data integrity do happen. 
+The aspect of "unexpected changes" introduces one major difficulty, which is that simply ensuring program correctness does not provide adequate resilience. To formally prove a programs correctness, and thus its ability to not enter any unexpected states, one would have to assume a code executor which is impossible to fail. While modern CPUs and their peripherals are extremely resilient, failures of instruction execution and data integrity do happen. 
 
 Hardware limitations however are simply the scapegoat of choice for an impossible hundred percent resilience. Programming errors and their resulting faults are more common. Especially with a larger codebase, the number of bugs increases linearly \cite{nq}.
 
@@ -13,6 +13,28 @@ Similar to how a computer system's hardware is designed to mitigate and react to
 Our research is based on the hypothesis, that Linux implements resilience patterns to handle software faults. Due to that, we will exclude hardware faults from our research scope.
 
 \section{Linux as a general purpose Kernel}
-In the scope of the Linux kernel, and its family of operating systems, we have a broad facette of uses. The broad use spectrum differentiates Linux from other forms of sofware in a significant fashion: The Kernel's design cannot be constrained to one architecture or type of system. This widens the area of faults and failures, requiring our analysis to consider the variety of usecases.
+In the scope of the Linux kernel, and its family of operating systems, we have a broad facet of uses. The broad use spectrum differentiates Linux from other forms of software in a significant fashion: The Kernel's design cannot be constrained to one architecture or type of system. This widens the area of faults and failures, requiring our analysis to consider the variety of use cases.
+
+Linux certainly utilizes architecture specific features to enhance resilience. But it is the systematic abstractions, that enable to achieve resilience across platforms. After all, resilience patterns are decisions at a higher level. They often set run-time rules or introduce additional components, such as caches or queues. 
 
 \section{Categorizing Software faults}
+Any operating system (and inherently its kernel) has three main responsibilities:
+
+\begin{itemize}
+\item Manage physical resources such as memory and devices
+\item Allow for multiple applications to be run
+\item Provide communication capabilities amongst applications and users
+\end{itemize}
+
+Given each of these responsibilities, the areas of fault can be narrowed down to the following questions:
+
+\begin{center}
+\begin{tabular}{ p{0.3\textwidth} | p{0.6\textwidth} } 
+ responsibility & considerations \\
+ \hline
+ Resource management & How is the memory Protected against corruption?\\
+ Multithreading & How are the common issues (Race conditions, Deadlocks and co.) dealt with? \\
+ IO and IPC & How do these system fair when pushed to their limits ? \\ 
+\end{tabular}
+\end{center}
+
