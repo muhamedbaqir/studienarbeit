@@ -18,12 +18,13 @@ In the scope of the Linux kernel, and its family of operating systems, we have a
 Linux certainly utilizes architecture specific features to enhance resilience. But it is the systematic abstractions, that enable to achieve resilience across platforms. After all, resilience patterns are decisions at a higher level. They often set run-time rules or introduce additional components, such as caches or queues. 
 
 \section{Categorizing Software faults}
-Any operating system (and inherently its kernel) has three main responsibilities:
+According to Tanenbaum, any operating system can either be seen as an abtraction for easier programming or a resource manager which distributes the systems capabilities.\cite{nq} Either way, an operating system must provide the following features:
 
 \begin{itemize}
-\item Manage physical resources such as memory and devices
-\item Allow for multiple applications to be run
-\item Provide communication capabilities amongst applications and users
+\item Manage Memory
+\item Interact with devices
+\item Provide communication capabilities amongst applications and users (IO and IPC)
+\item Enable multiple user-space applications to run (Multithreading)
 \end{itemize}
 
 Given each of these responsibilities, the areas of fault can be narrowed down to the following questions:
@@ -32,9 +33,11 @@ Given each of these responsibilities, the areas of fault can be narrowed down to
 \begin{tabular}{ p{0.3\textwidth} | p{0.6\textwidth} } 
  responsibility & considerations \\
  \hline
- Resource management & How is the memory Protected against corruption?\\
+ Memory Management& How is the memory Protected against common bugs and attack vectors?\\
+ Device Drivers & Given the increased risk of hardware failures and bugs (more LOC than other regions), how are faults contained?
+ IO and IPC & How can the low latency and high throughput demands be met?\\ 
  Multithreading & How are the common issues (Race conditions, Deadlocks and co.) dealt with? \\
- IO and IPC & How do these system fair when pushed to their limits ? \\ 
+ 
 \end{tabular}
 \end{center}
 
