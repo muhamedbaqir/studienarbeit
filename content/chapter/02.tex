@@ -34,10 +34,11 @@ Given each of these responsibilities, the areas of fault can be narrowed down to
  responsibility & considerations \\
  \hline
  Memory Management& How is the memory Protected against common bugs and attack vectors?\\
- Device Drivers & Given the increased risk of hardware failures and bugs (more LOC than other regions), how are faults contained?
+ Device Drivers & Given the increased risk of hardware failures and bugs (more LOC than other regions), how are faults contained?\\
  IO and IPC & How can the low latency and high throughput demands be met?\\ 
  Multithreading & How are the common issues (Race conditions, Deadlocks and co.) dealt with? \\
  
 \end{tabular}
 \end{center}
 
+Furthermore we will analyse how each function faires when pushed to its limit. Resilience is most demanded at high loads and any Kernel must consider how to act, when its resources are at their limit.
