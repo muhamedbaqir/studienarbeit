@@ -247,11 +247,12 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# compiled binaries
+# kernel module stuff
 *.ko 
 *.o
 *.mod
 *.mod.c
 *.mod.o
+*.cmd
 modules.order
 Module.symvers
