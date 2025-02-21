@@ -1,3 +1,25 @@
+/*
+ * todo
+ *
+ * register bulk device
+ * determine requirements for a filesystem (ext4) to work with a device
+ * request queue (allows circuit break, work queue balancing )
+ * persistent metainfo storage
+ * POL
+ * implement Userspace restart agent
+ * */
+
+/* 
+ * blkdev stuff
+ *
+ * register_blkdev -> still up2date?
+ * create gendisk => add_disk(struct gendisk *gd) => disk is live => 
+ *
+ *
+ *
+ * */
+
+
 #include <linux/module.h> /* Needed by all modules */ 
 #include <linux/printk.h> /* Needed for pr_info() */ 
 #include <linux/vmalloc.h>
