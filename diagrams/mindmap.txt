@@ -1,17 +1,15 @@
 @startmindmap
 + Linux Kernel Resilience Patterns
 ++ Fault isolation / Bulkhead
++++ C "Modules" (Request <-> Header file <-> Function)
 +++ Memory Zones
 +++ Device Drivers do not access user space
 +++ Different hardware privilege levels for userspace and kernel space
-+++ Linux Security Modules (Kernel enforced security)
-++ Load Balancing
-+++ built in queues (bulk devices request queue)
-+++ IO Scheduling
+++ Queue based load-levelling
++++ Task Scheduling (Tasklets/work queues)
++++ IO Scheduling (e.g. bulk request queue)
 ++ Caching
 +++ Virtual Memory (dirty pages)
-++ Real-Time
-+++ atomic types
 ++ Retry
 +++ Bulk driver requests can be configured to (not) be retried
 ++ circuit break
@@ -25,4 +23,12 @@
 +++ IOCTL system call for drivers
 ++ Load Shedding
 +++ SWAP memory
+++ MISC
++++ Security
+++++ Linux Security Modules (Kernel enforced security)
+++++ Struct Layout Randomization
++++ Chaos Engineering (Fuzzing)
++++ Real-Time
+++++ atomic types
+++++ interrupt priorities
 @endmindmap
