@@ -1,6 +1,8 @@
 
 @startmindmap
-+ Open Questions
-++ Is driver registration / load balancing a SPOF?
-++ How are Kernel Oopses detected
++ Fragen
+++ Wie mehr technische Tiefe? 
+-- Ist Treiber Registrierung / Scheduling (IO, Task) ein SPOF?
+-- Wie werden Kernel Oopses ausgelöst?
+-- Was wenn Kernel Panic ausbleibt?
 @endmindmap

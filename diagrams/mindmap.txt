@@ -10,6 +10,7 @@
 +++ IO Scheduling (e.g. bulk request queue)
 ++ Caching
 +++ Virtual Memory (dirty pages)
++++ Inodes as in-memory structures (faster IPC / File IO)
 ++ Retry
 +++ Bulk driver requests can be configured to (not) be retried
 ++ circuit break
@@ -17,6 +18,9 @@
 ++ Graceful Fail
 +++ Panic after N oopses
 ++ Fault Detection
++++ Watchdogs
+++++ Hard/Soft lockup detector
+++++ stuck process detection 
 +++ Oopses (Faulty Memory Accesses)
 +++ Runtime Sanitizers (e.g. KASAN Address checking)
 ++ Health Checks
