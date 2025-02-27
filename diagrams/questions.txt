@@ -1,0 +1,6 @@
+
+@startmindmap
++ Open Questions
+++ Is driver registration / load balancing a SPOF?
+++ How are Kernel Oopses detected
+@endmindmap
