@@ -1,17 +1,23 @@
-\chapter{Challenges of a Macro Kernel}
+\chapter{Bulkhead / Fault Isolation}
+Similar to how large distributed systems achieve resilience through breaking up functionality into smaller fragments, the same principle is used in the hardware-bound Linux Kernel. 
 
-\chapter{Memory Management}
-\section{Kernel- and Userspace}
-\section{Kernel Memory Zones}
+The main goal of the Bulkhead pattern is fault isolation: When breaking up a large application into smaller fragments, we can achieve discoupling amongst fragments. Other fragments can still function (to a certain extent) when another fails. The main drawback is a higher communication demand amongst fragments and additional challenges in state management.
 
-\chapter{Device Drivers}
 
-\chapter{IO and IPC}
-\section{Filesystems}
-\section{Networking}
-\section{IPC}
 
-\chapter{Multithreading}
-\section{Interrupts}
-\section{Real time requirements}
-\section{Concurrency}
+\section{Decomposition}
+These \enquote{fragments} can be anything really. Microservices, Components or Processes can serve this function. They all function by hiding complex logic behind simple interfaces, for other services to use. 
+
+The main mechanism of decompostition is rooted into the C language: Exploiting functions and static data (configuration and state) is done using header files. Every subsystem exports an set interface to interact with it and make use of its functions. Of course aside from reusing code, this enables Kernel subsystems to integrate error handling when calling external methods, and thus tolerate faults of other modules.
+
+This ability to tolerate faults is inherently the core of resilience and more importantly, enables a divide-and-conquer approach to further protect our system. By breaking up the Linux Kernel, developers can make use of other resilience patterns, given their domain specific challenges.
+
+One drawback of relying on header files is the compile-time limitation. We need to rely on other mechanisms, for actions which are dynamic in nature. Dynamically registering devices, drivers or system calls cannot be done by simply relying on static dependencies. This is where another instance of the bulkhead resilience pattern shines: Introducing dynamic (un-)registration mechanisms and routing.
+
+Take device drivers as an example: It is obvious that a single driver, that accesses all hardware interfaces, memory and interacts with user space all at once is destined to pose a large threat for resilience. This is why a mechanism of routing through the use of Major/Minor device numbers is excellent. The request specifies those numbers, the kernel resolves them to a certain driver and its device and the driver handles the request. Device drivers can dynamically (un-)register themselves from the list of Major/Minor numbers.
+
+
+Here we can see how one driver has nothing to do with the other and is operated through the Device Driver Model\cite{nq}, which resolves requests. 
+Here the resolving mechanism seperates drivers (so it is a bulkhead instance) and acts as a \enquote{proxy} which can allow further resilience patterns.
+
+\section{Memory Partitioning}
