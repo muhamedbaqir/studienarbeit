@@ -2,7 +2,19 @@
 The Queue-based load leveling pattern aims to prevent sudden utilization spikes by not storing requests in an intermediate queue, rather than directly executing them. The benefits here are that a resource, cannot be blocked by requests, rather it decides when to process requests.
 This increases resilience by allowing subsystems to not be exposed to sudden spikes in demands.
 
-This mechanism shines for operations, which are blocking and asynchronous in nature. It is no surprise, that IO operations and blocking computations are bound to benefit from queue-based load leveling.
+The main resources of any computer system are peripherals(Disks, Networking, Devices) and Computation Resources(CPU, Memory). 
+This resilience pattern shines for operations, which are blocking and asynchronous in nature. It is no surprise, that IO operations and blocking computations are bound to benefit from queue-based load leveling.
 
 \section{IO Operations}
-\section{Work Queues}
+In the Linux Kernel, all forms of IO are abstracted as either Bulk or Character Devices. Character devices read a stream of bytes and are commonly abstractions for Network cards, HIDs. Bulk devices on the other hand work with blocks of data, used for large Storage.
+Here it is notable that the Linux Kernel is a macro-kernel and all device drivers run in kernel space. This means that the processes of device drivers directly affect Kernel resilience.
+
+When considering their crucial role, high performance demands and the fact that they make up most of the Kernel code, it becomes clear that device drivers are key to high resilience. How user space interacts with them and how they in turn affect the running system will be analysed in the following.
+
+Requests to bulk devices are first placed in a IO queue, with its own IO scheduler. Simply placing them in a queue means that the bulk device drivers can work off this queue at a constant pace, without suffering under higher loads. This queue also enables for IO requests to be scheduled. In the context of mechanical hardware the scheduler would chain sequential reads to optimize performance.
+Balancing loads in this manner means that blocking operations are not executed instantly and allows for request limits.
+
+Character devices do not have this scheduling mechanism. For one, character devices did not demand the optimization for sequential reads. For another the overhead of creating requests, placing them in a queue and optimizing it, is not necessarily worth it. Character devices might read as little as one byte at a time.
+
+\section{CPU Scheduling}
+// work queues, interrupts, tasklets, 

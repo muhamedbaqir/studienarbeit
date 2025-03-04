@@ -14,7 +14,8 @@
 +++ Bulk driver requests can be configured to (not) be retried
 ++ circuit break
 +++ possible through dynamic driver (un-)registration
-++ Graceful Fail
+++ Fail fast
++++ IO Scheduler max parameter
 +++ Panic after N oopses
 ++ Fault Detection
 +++ Watchdogs
