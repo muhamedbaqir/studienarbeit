@@ -2,7 +2,6 @@
 + Linux Kernel Resilience Patterns
 ++ Fault isolation / Bulkhead
 +++ C "Modules" (Request <-> Header file <-> Function)
-+++ Memory Zones
 +++ Device Drivers do not access user space
 +++ Different hardware privilege levels for userspace and kernel space
 ++ Queue based load-levelling

@@ -1,17 +1,8 @@
-\chapter{Challenges of a Macro Kernel}
+\chapter{Queue-Based Load Leveling}
+The Queue-based load leveling pattern aims to prevent sudden utilization spikes by not storing requests in an intermediate queue, rather than directly executing them. The benefits here are that a resource, cannot be blocked by requests, rather it decides when to process requests.
+This increases resilience by allowing subsystems to not be exposed to sudden spikes in demands.
 
-\chapter{Memory Management}
-\section{Kernel- and Userspace}
-\section{Kernel Memory Zones}
+This mechanism shines for operations, which are blocking and asynchronous in nature. It is no surprise, that IO operations and blocking computations are bound to benefit from queue-based load leveling.
 
-\chapter{Device Drivers}
-
-\chapter{IO and IPC}
-\section{Filesystems}
-\section{Networking}
-\section{IPC}
-
-\chapter{Multithreading}
-\section{Interrupts}
-\section{Real time requirements}
-\section{Concurrency}
+\section{IO Operations}
+\section{Work Queues}
