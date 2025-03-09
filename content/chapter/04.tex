@@ -14,7 +14,18 @@ When considering their crucial role, high performance demands and the fact that 
 Requests to bulk devices are first placed in a IO queue, with its own IO scheduler. Simply placing them in a queue means that the bulk device drivers can work off this queue at a constant pace, without suffering under higher loads. This queue also enables for IO requests to be scheduled. In the context of mechanical hardware the scheduler would chain sequential reads to optimize performance.
 Balancing loads in this manner means that blocking operations are not executed instantly and allows for request limits.
 
-Character devices do not have this scheduling mechanism. For one, character devices did not demand the optimization for sequential reads. For another the overhead of creating requests, placing them in a queue and optimizing it, is not necessarily worth it. Character devices might read as little as one byte at a time.
+Character devices do not have this scheduling mechanism. For one, character devices did not demand the optimization for sequential reads. For another the overhead of creating requests, placing them in a queue and optimizing it, is not necessarily worth it. One must note that character devices might read as little as one byte at a time.
 
 \section{CPU Scheduling}
-// work queues, interrupts, tasklets, 
+In a multitasking operating system, there are two major forms of scheduling:
+\begin{enumerate}
+\item Cooperative Scheduling: Threads voluntarily give up the CPU
+\item Preemptive Scheduling: The scheduler decides (forcefully) when threads run
+\end{enumerate}
+
+We can quickly see a major risk in cooperative scheduling for system resilience: A process has the capability of hogging the CPU indefinitely. When a system is processing a large volume of requests, other functionalities of the system are denied CPU time.
+This is one of the reasons why the Linux Kernel, amongst many others, implements a scheduler that dictates how threads run.
+
+Beside scheduling user space processes, the kernel also introduces kthreads\cite{nq}, to allow kernel-space programs to defer work. Many blocking operations are run in the kernel, and the mechanism of work queues allows for the system to balance loads temporally and distribute them.
+
+Furthermore the Kernel implements an interrupt handling mechanism, for situations that require CPU time, which might not be a thread. (e.g. Processing a hardware input or software interrupts)
