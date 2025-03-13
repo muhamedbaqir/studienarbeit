@@ -2,8 +2,36 @@
 Caching is essential for system resilience, because it:
 \begin{itemize}
 \item drastically speeds up frequent operations
-\item reduces load on devices
-\item 
+\item reduces load on hardware devices
+\item allows for extended request handling logic.
 \end{itemize}
 
-// types of caches, how they improve resilience and cost
+Caching is effective because there are many scenarios, where there is a fast and small capacity resource and a slow one with a larger capacity. In the hardware context, there exist primarily the layers of the CPU cache, system memory and the hard disk.
+While caching per se is not a mechanism to react to or mitigate a fault, mitigating the risk of overload of critical systems is essential to achieve high system availabiliy. 
+
+The Linux kernel implements a variety of caches, which aim to utilize the discrepancy of speed and capacity. Speeding up operations is key to a responsive and resilient system, which can handle a large volume of requests.
+
+\section{Page Caching}
+ -- The Linux kernel supports a very large variety of system sizes - considering it can run on super computers and embedded chips. However, the
+
+Physical devices have limits, to how many read/write requests they can handle at once. This is an obvious contrast to the thousands of threads that a system can be running.
+This makes it obvious, that we want to keep requests to disks at a minimum. This can be achieved in the following ways:
+\begin{itemize}
+        \item Write Data to RAM, and later to disk when it is more convenient
+        \item Read frequently used Data into RAM for faster access
+\end{itemize}
+
+Since both operations want to be kept at a minimum, the Linux kernel implements a single page cache, which caches entire pages of a disk for read and write operations.
+When the data in the cache has been changed to its disk counterpart, a damon writes back the \enquote{dirty pages} into the disk. Here we must highlight the risk of data loss, when the system crashes before writing back the data to persistent storage.
+
+Furthermore it is important to note that this only applies to bulk devices, since their data is organized in pages. Another restriction is that the data that is being handled is binary file data, without its corresponding metadata. The dentry/inode cache is responsible for this aspect of disk acccess.
+
+\section{Dentry / Inode Caching}
+Filesystem operations such as moving a file or renaming it affect a files metadata, which is in contrast to its binary data.
+Applications that frequently create, move or in other ways modify files  benefit from speeding up these operations. Applications often create many temporary session files, intermediate compilation results or when storing process output to a file.
+
+-- explain filesystem inode abstraction
+-- inodes as memory structures
+-- everything is file
+\section{IPC}
+-- IPC happens in memory maybe still part of previous chapter
