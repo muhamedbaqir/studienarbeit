@@ -12,9 +12,7 @@ While caching per se is not a mechanism to react to or mitigate a fault, mitigat
 The Linux kernel implements a variety of caches, which aim to utilize the discrepancy of speed and capacity. Speeding up operations is key to a responsive and resilient system, which can handle a large volume of requests.
 
 \section{Page Caching}
- -- The Linux kernel supports a very large variety of system sizes - considering it can run on super computers and embedded chips. However, the
-
-Physical devices have limits, to how many read/write requests they can handle at once. This is an obvious contrast to the thousands of threads that a system can be running.
+The Linux kernel supports a very large variety of system sizes - considering it can run on super computers and embedded chips.However, the physical devices have limits, to how many read/write requests they can handle at once. This is an obvious contrast to the thousands of threads that a system can be running.
 This makes it obvious, that we want to keep requests to disks at a minimum. This can be achieved in the following ways:
 \begin{itemize}
         \item Write Data to RAM, and later to disk when it is more convenient
@@ -26,12 +24,30 @@ When the data in the cache has been changed to its disk counterpart, a damon wri
 
 Furthermore it is important to note that this only applies to bulk devices, since their data is organized in pages. Another restriction is that the data that is being handled is binary file data, without its corresponding metadata. The dentry/inode cache is responsible for this aspect of disk acccess.
 
-\section{Dentry / Inode Caching}
+\section{Inode Caching}
 Filesystem operations such as moving a file or renaming it affect a files metadata, which is in contrast to its binary data.
 Applications that frequently create, move or in other ways modify files  benefit from speeding up these operations. Applications often create many temporary session files, intermediate compilation results or when storing process output to a file.
 
--- explain filesystem inode abstraction
--- inodes as memory structures
--- everything is file
-\section{IPC}
--- IPC happens in memory maybe still part of previous chapter
+In the virtual file system of the Linux kernel and its "everything is a file" philosophy, nearly everything is abstracted as an inode. Inodes are in-memory representations of many different types of files. They contain contain metadata about a file and are the main mechanisim of interacting with the filesystem. An inode can represent: 
+
+\begin{itemize}
+\item Regular Files
+\item Directories
+\item Devices (Block and Character)
+\item Pipes (for interprocess-communication)
+\item sockets
+\end{itemize}
+
+As we learned earlier, a files data is cached in memory when it is accessed. The same principle applies for its metainformation, which are persisting on disk. The inode cache serves this specific purpose. 
+
+Here the speed boost comes with the drawback of additional challenges in maintaining consistency. A system crash can result in substantial data loss, if inodes and their changes have not yet been written to disk. Some filesystems use journaling mechanisms to reduce that risk.
+
+\section{Dentry Caching}
+One very obvious piece of metadata of a file is its name, and path. In the VFS, directories are inodes that contain other inodes, meaning that they are folders and files are the same underlying data structure.
+
+One of the most frequent operations is accessing a file by its name and not inode number. To improve performance the Dentry Cache stores the inode numbers of recently accessed filepaths.
+
+
+
+
+
