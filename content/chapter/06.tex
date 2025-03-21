@@ -1,11 +1,13 @@
 \chapter{Fault detection}
 The kernel is a supervisor to all user space applications, and there is no one supervising the kernel. That idea is the reason for splitting operating systems into user and kernel space. 
 For example when an application attempts to access foreign memory, the kernel simply forbids that operation and segfaults the offending application.
-In the kernel space however, all memory belongs to the kernel.
+But the kernel is only controlled by itself. When faults happen, it cannot simply kill itself.
 
-This is a serious risk to resilience, because a corrupted kernel that does not terminate can seriously damage the system. While it might seem contradictive, failures are benefitial for resilience.
+This is a serious risk to resilience, because a corrupted kernel that does not terminate can seriously damage the system. While it might seem contradictive, controlled failures are benefitial for resilience.
 This is why the kernel implements a variety of mechanisms to know when faults are occuring.
 
 \section{Oopses and Panics}
+
+
 \section{Watchdogs}
 \section{Sanitizers}
