@@ -1,13 +1,20 @@
 \chapter{Fault detection}
-The kernel is a supervisor to all user space applications, and there is no one supervising the kernel. That idea is the reason for splitting operating systems into user and kernel space. 
-For example when an application attempts to access foreign memory, the kernel simply forbids that operation and segfaults the offending application.
-But the kernel is only controlled by itself. When faults happen, it cannot simply kill itself.
+The kernel is a supervisor to all user space applications, and there is no one supervising the kernel. That is one of the reasons for splitting operating systems into user and kernel space.
+When a user space application misbehaves, the kernel can easily terminate it. But the kernel is only controlled by itself. When faults happen, it cannot simply kill itself.
 
-This is a serious risk to resilience, because a corrupted kernel that does not terminate can seriously damage the system. While it might seem contradictive, controlled failures are benefitial for resilience.
-This is why the kernel implements a variety of mechanisms to know when faults are occuring.
+Just like any application, defining and reacting to exceptions is a must for achieving high resilience. A corrupted kernel that does not terminate can seriously damage the system. While it seems counter-intuitive, controlled faults and failures are essential for a resilient system.
 
-\section{Oopses and Panics}
+This is why the kernel implements a variety of mechanisms to know when faults are occuring, so that it can decide how to react to them.
 
+\section{Oopses}
+An Oops is simply an obeservation, that tells the kernel and its users (via logging), that a faulty operation has happened. They are one of the mechanisms to detect and communicate faults within the system. Oopses can have many causes, and the Linux kernel reacts differently to them based on its configuration.
+
+Oopses arise from mainly two forms of exceptions:
+% maybe "trigger" instead of "exceptions"
+\begin{itemize}
+        \item Hardware Exceptions, which happen when the CPU forbids certain operations. For example, zero division or bad instructions.
+        \item Software Exceptions, which are called by kernel code. For example when a kernel module tries to access unallowed memory.
+\end{itemize}
 
 \section{Watchdogs}
 \section{Sanitizers}
