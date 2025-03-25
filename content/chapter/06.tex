@@ -6,8 +6,11 @@ Just like any application, defining and reacting to exceptions is a must for ach
 
 This is why the kernel implements a variety of mechanisms to know when faults are occuring, so that it can decide how to react to them.
 
-\section{Oopses}
-An Oops is simply an obeservation, that tells the kernel and its users (via logging), that a faulty operation has happened. They are one of the mechanisms to detect and communicate faults within the system. Oopses can have many causes, and the Linux kernel reacts differently to them based on its configuration.
+\section{Oops}
+An Oops is simply an obeservation, that tells the kernel and its users (via logging), that a faulty operation has happened. They are one of the mechanisms to detect and communicate faults within the system. 
+Oopses can have many causes, and the Linux kernel reacts differently to them based on its configuration.
+
+Most importantly, they serve the purpose of highlighting incorrect behaviour, so that it can be debugged by the kernel developers. An oops by itself does not improve runtime resilience, but they provide a long-term debugging framework that helps developers improve the system over time.
 
 Oopses arise from mainly two forms of exceptions:
 % maybe "trigger" instead of "exceptions"
@@ -16,5 +19,53 @@ Oopses arise from mainly two forms of exceptions:
         \item Software Exceptions, which are called by kernel code. For example when a kernel module tries to access unallowed memory.
 \end{itemize}
 
+An oops is the prime example of fault tolerance: 
+The kernel simply processes the fault that happens, yet continues to operate.
+
+On a side note, the kernel is implementing a form of the fail fast resilience pattern by failing after N oopses. That pattern will be further explored in its respektive chapter.
+
 \section{Watchdogs}
+Watchdogs are processes, which monitor the behaviour of other kernel programs. Their main purpose is to detect and report that something has gone wrong, and can be configured to take further actions.
+
+Often, watchdogs are needed in multithreading environments. When multiple processes are running as intended, but can cause issues in their interactions. For example deadlocks or thread starvation would be such issues. 
+
+Notable watchdogs are:
+\begin{itemize}
+        \item Deadlock Detection: They monitor the resources and the threads, which place locks upon them.
+        \item Hard Lockup Detectors: They detect when a CPU is completely unresponsive.
+        \item Soft Lockup Detectors: They detect, when a CPU is running in kernel mode for too long, not scheduling other user space tasks.
+\end{itemize}
+
+
 \section{Sanitizers}
+Sanizers are optional programs, which detect known forms of incorrect memory usage and other forms of common errors. Since they are very performance intensive, they usually remain used in debugging contexts. If the application is critical, using them in production might still be viable.
+
+They improve resilience by detecting - at runtime - common programming mistakes and allow kernel developers to improve system reliability in the long term.
+
+The available sanizers are: 
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|c|}
+        \hline
+        Sanizer & Purpose\\
+        \hline
+        A1 & B1 \\
+        A2 & B2 \\
+        A3 & B3 \\
+        \hline
+    \end{tabular}
+    %\caption{A Simple Table}
+    %\label{tab:example}
+\end{table}
+
+
+
+
+
+
+
+
+
+
+
+
