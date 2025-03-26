@@ -36,36 +36,24 @@ Notable watchdogs are:
         \item Soft Lockup Detectors: They detect, when a CPU is running in kernel mode for too long, not scheduling other user space tasks.
 \end{itemize}
 
-
+\newpage
 \section{Sanitizers}
 Sanizers are optional programs, which detect known forms of incorrect memory usage and other forms of common errors. Since they are very performance intensive, they usually remain used in debugging contexts. If the application is critical, using them in production might still be viable.
 
 They improve resilience by detecting - at runtime - common programming mistakes and allow kernel developers to improve system reliability in the long term.
 
-The available sanizers are: 
+Some of the available sanizers are: 
 \begin{table}[h]
-    \centering
-    \begin{tabular}{c|c|}
+    \begin{tabular}{c | p{8cm} }
         \hline
         Sanizer & Purpose\\
         \hline
-        A1 & B1 \\
-        A2 & B2 \\
-        A3 & B3 \\
+        KASAN (Kernel Address Sanitizer)& Detects use-after-free and out-of-bounds errors\\
+        KMSAN (Kernel Memory Sanitizer) & Detects usage of uninitialized memory \\
+        KCSAN (Kernel Concurrency Sanizer) & Detects race condiditions \\
+        KFENCE (Kernel Electric-Fence) & Detects heap out-of-bounds access, use-after-free and invalid free errors. Its overhead is low enough to be production viable \\
         \hline
     \end{tabular}
-    %\caption{A Simple Table}
-    %\label{tab:example}
 \end{table}
 
-
-
-
-
-
-
-
-
-
-
-
+Depending on their configuration, kernel sanitizers can either log an oops or panic (i.e. terminate) the Kernel. In the scope of resilience, they provide a strong framework to detect and debug runtime errors. 
