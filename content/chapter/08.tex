@@ -2,4 +2,11 @@
 The fail fast pattern advises to quickly reach a failure state, to prevent operating in a corrupted state and enabling a quick restart. 
 Similar to how the kernel shuts down user space processes, it can decide to terminate itself.
 
-To terminate, the Kernel calls the \enquote{panic} function, which terminates the kernel on all CPUs
+\section{Panic}
+To terminate, the Kernel provides the \enquote{panic} function, which terminates the kernel on all CPUs.
+
+A panic can occur as soon as during the boot process, when the \enquote{initramfs} gets corrupted. In the further kernel operation, the panic function can be called by all kernel modules. 
+Furthermore, the kernel can be configured to panic on certain conditions, e.g. when a certain number of oopses has been reached. For debugging purposes, the kernel can be configured to panic on every oops.
+
+When the panic function was called, it firstly logs an error, dumps the stack trace and can either reboot or hang.
+When the system hangs, it leaves administrators time to analyse the logs. 
