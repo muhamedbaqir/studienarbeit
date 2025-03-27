@@ -25,7 +25,7 @@
 ++++ stuck process detection 
 +++ Oopses (Faulty Memory Accesses)
 +++ Runtime Sanitizers (e.g. KASAN Address checking)
-++ Health Checks
+++ Ping of Life
 +++ IOCTL system call for drivers
 ++ Load Shedding
 +++ SWAP memory
