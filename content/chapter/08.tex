@@ -10,3 +10,8 @@ Furthermore, the kernel can be configured to panic on certain conditions, e.g. w
 
 When the panic function was called, it firstly logs an error, dumps the stack trace and can either reboot or hang.
 When the system hangs, it leaves administrators time to analyse the logs. 
+
+Setting low thresholds for a kernel panic benefits resilience, because we want to terminate a potentially corrupted kernel as soon as possible.
+As described previously, the kernel and its subsequent user space applciations often operate in caches, and only indirectly persist data to disk. Operating on fleeting data requires vast consistency considerations, and one of them is a kill switch for all operations.
+
+
