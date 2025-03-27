@@ -1,0 +1,5 @@
+\chapter{Fail fast}
+The fail fast pattern advises to quickly reach a failure state, to prevent operating in a corrupted state and enabling a quick restart. 
+Similar to how the kernel shuts down user space processes, it can decide to terminate itself.
+
+To terminate, the Kernel calls the \enquote{panic} function, which terminates the kernel on all CPUs
