@@ -60,38 +60,144 @@
 % 4.1
 % difference block character device definition
 % block IO queue
+@misc{blk_mq,
+  author       = {Kernel Org},
+  title        = {Multi-Queue Block IO Queueing Mechanism (blk-mq)},
+  url          = {https://docs.kernel.org/block/blk-mq.html},
+  note         = {Accessed: March 28, 2025}
+}
 % 4.2
-% kthreads, maybe need to explain more 
+% kthreads, maybe need to explain more, (i put workqueue)
+@misc{workqueue,
+  author       = {Kernel Org},
+  title        = {Workqueue},
+  url          = {https://docs.kernel.org/core-api/workqueue.html},
+  note         = {Accessed: March 28, 2025}
+}
+
 % interrupts
 % 5
-% caching definition
+% cache aside pattern
+@misc{cache_aside,
+  author       = {Microsoft Corporation},
+  title        = {Cache-Aside pattern},
+  url          = {https://learn.microsoft.com/en-us/azure/architecture/patterns/cache-aside},
+  note         = {Accessed: March 28, 2025}
+}
 % 5.1
-% page caching documentation
-% "only bulk device pages are cached"
+% page caching documentation 15.1
+@book{bovet2005understanding,
+  author    = {Daniel P. Bovet and Marco Cesati},
+  title     = {Understanding the Linux Kernel},
+  edition   = {3rd},
+  year      = {2005},
+  publisher = {O'Reilly Media},
+}
+
 % 5.2 
 % inode definition
-% journaling filesystems 
+@misc{inode,
+  author       = {Kernel Org},
+  title        = {Index Nodes},
+  url          = {https://www.kernel.org/doc/html/latest/filesystems/ext4/inodes.html},
+  note         = {Accessed: March 28, 2025}
+}
+
+% journaling filesystems, e.g. ext4
+@misc{inode,
+  author       = {Kernel Org},
+  title        = {ext4 Filesystem General Information},
+  url          = {https://www.kernel.org/doc/html/v4.19/filesystems/ext4/ext4.html#features},
+  note         = {Accessed: March 28, 2025}
+}
+
+
 % 5.3 
 dentry caching definition
+@misc{dentry_caching,
+  author       = {Kernel Org},
+  title        = {Overview of the Linux Virtual File System},
+  url          = {https://www.kernel.org/doc/html/v5.7/filesystems/vfs.html},
+  note         = {Accessed: March 28, 2025}
+}
+
 % 6 
 % 6.1 
-% oops definition
-% oops causes
+% oops definition -> linux device drivers, chapter 4 , oops messages
+
+
+% oops causes -> seems logical to me
 % quote fail after n oopses 
+
 % 6.2 
-% watchdog definition
-% deadlock detection docu
-% hard lockup detection docu
-% soft lockup detection docu
+% watchdog definition -> seems logical to me
+% deadlock detection docu 
+@misc{runtime_locking_correctness,
+  author       = {Kernel Org},
+  title        = {Runtime locking correctness validator},
+  url          = {https://docs.kernel.org/locking/lockdep-design.html},
+  note         = {Accessed: March 28, 2025}
+}
+% hard lockup detection docu && soft lockup detection docu
+@misc{runtime_locking_correctness,
+  author       = {Kernel Org},
+  title        = {Softlockup detector and hardlockup detector (aka nmi_watchdog)},
+  url          = {https://docs.kernel.org/admin-guide/lockup-watchdogs.html},
+  note         = {Accessed: March 28, 2025}
+}
+
 % 6.3
 % Sanitzer definition? 
 % KASAN docu
+@misc{kasan,
+  author       = {Kernel Org},
+  title        = {The Kernel Address Sanitizer (KASAN)},
+  url          = {https://www.kernel.org/doc/html/v4.14/dev-tools/kasan.html},
+  note         = {Accessed: March 28, 2025}
+}
 % KMSAN docu
+@misc{kmsan,
+  author       = {Kernel Org},
+  title        = {The Kernel Memory Sanitizer (KMSAN)},
+  url          = {https://docs.kernel.org/dev-tools/kmsan.html},
+  note         = {Accessed: March 28, 2025}
+}
 % KCSAN docu
+@misc{kcsan,
+  author       = {Kernel Org},
+  title        = {Kernel Concurrency Sanitizer (KCSAN)},
+  url          = {https://docs.kernel.org/dev-tools/kcsan.html},
+  note         = {Accessed: March 28, 2025}
+}
 % KFENCE docu
+@misc{kfence,
+  author       = {Kernel Org},
+  title        = {Kernel Electric-Fence (KFENCE)},
+  url          = {https://docs.kernel.org/dev-tools/kfence.html},
+  note         = {Accessed: March 28, 2025}
+}
 % 7 
 % fail fast definition
+@article{shore2004fail,
+  author    = {Jim Shore},
+  editor    = {Martin Fowler},
+  title     = {Fail Fast},
+  journal   = {IEEE Software},
+  volume    = {21},
+  number    = {5},
+  pages     = {21--25},
+  year      = {2004},
+  publisher = {IEEE Computer Society},
+  url       = {https://www.martinfowler.com/ieeeSoftware/failFast.pdf}
+}
+
 % panic function docu, further reading
+@misc{kfence,
+  author       = {Kernel Org},
+  title        = {void panic(const char *fmt, ...)},
+  url          = {https://docs.kernel.org/driver-api/basics.html#c.panic},
+  note         = {Accessed: March 28, 2025}
+}
 
 
 
