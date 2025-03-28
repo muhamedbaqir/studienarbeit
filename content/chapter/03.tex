@@ -17,5 +17,5 @@ One drawback of relying on header files is the compile-time limitation. We need 
 Take device drivers as an example: It is obvious that a single driver, that accesses all hardware interfaces, memory and interacts with user space all at once is destined to pose a large threat for resilience. This is why a mechanism of routing through the use of Major/Minor device numbers is excellent. The request specifies those numbers, the kernel resolves them to a certain driver and its device and the driver handles the request. Device drivers can dynamically (un-)register themselves from the list of Major/Minor numbers. \cite[ch. 3]{Corbet2005}
 
 
-Here we can see how one driver has nothing to do with the other and is operated through the Device Driver Model\cite{nq}, which resolves requests. 
+Here we can see how one driver has nothing to do with the other and is operated through the Device Driver Model, which resolves requests. 
 Here the resolving mechanism seperates drivers (so it is a bulkhead instance) and acts as a \enquote{proxy} which can allow further resilience patterns.
