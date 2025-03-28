@@ -1,16 +1,62 @@
 % required citations
 % 2.1 
 % laprie resilience definition
+@inproceedings{Laprie2008,
+  author    = {Jean-Claude Laprie},
+  title     = {From Dependability to Resilience},
+  booktitle = {28th International Symposium on Fault-Tolerant Computing (FTCS-28)},
+  year      = {2008},
+  address   = {Toulouse, France},
+  publisher = {LAAS-CNRS},
+  note      = {Available at: \url{http://www.laas.fr}}
+}
 % "cpu and peripheries can fail" maybe
 % prop. relation LOC and bugs
 % 2.3
-% tanenbaum OS definition
+% tanenbaum OS definition, 1.1.2
+@incollection{tanenbaum2006resource_manager,
+  author    = {Andrew S. Tanenbaum and Albert S. Woodhull},
+  title     = {The Operating System as a Resource Manager},
+  booktitle = {Operating Systems: Design and Implementation},
+  edition   = {3rd},
+  year      = {2006},
+  publisher = {Prentice Hall},
+  address   = {Upper Saddle River, NJ},
+  pages     = {5--6},
+  isbn      = {978-0131429383}
+}
+
+
+
 % 3
 % bulkhead definition
+@misc{bulkhead_pattern_azure,
+  author       = {Microsoft Corporation},
+  title        = {Bulkhead Pattern},
+  url          = {https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead},
+  note         = {Accessed: March 28, 2025}
+}
 % 3.1
-% device driver model quote
+% major minor number, device driver model, chapter 3
+@book{Corbet2005,
+  author    = {Jonathan Corbet and Alessandro Rubini and Greg Kroah-Hartman},
+  title     = {Linux Device Drivers},
+  edition   = {3rd},
+  year      = {2005},
+  publisher = {O'Reilly Media},
+  address   = {Sebastopol, CA},
+  isbn      = {978-0-596-00590-0},
+  url       = {https://www.oreilly.com/library/view/linux-device-drivers/0596005903/}
+}
+
 % 4
 % queue resilience pattern definition
+@misc{queue_based_load_levelling,
+  author       = {Microsoft Corporation},
+  title        = {Queue-Based Load Leveling},
+  url          = {https://learn.microsoft.com/en-us/azure/architecture/patterns/queue-based-load-leveling},
+  note         = {Accessed: March 28, 2025}
+}
 % 4.1
 % difference block character device definition
 % block IO queue
@@ -66,7 +112,7 @@ dentry caching definition
 	url = {http://www.dtic.mil/cgi-bin/GetTRDoc?AD=ADA084551&Location=U2&doc=GetTRDoc.pdf},
 }
 
-@Online{fsf:2007,
+@Online{laprie:2007,
 	author = {{Free Software Foundation}},
 	title = {{GNU AFFERO GENERAL PUBLIC LICENSE}},
 	url = {http://www.gnu.org/licenses/agpl-3.0.de.html},
