@@ -1,7 +1,7 @@
 \chapter{Bulkhead}
 Similar to how large distributed systems achieve resilience through breaking up functionality into smaller fragments, the same principle is used in the hardware-bound Linux Kernel. 
 
-The main goal of the Bulkhead pattern is fault isolation: When breaking up a large application into smaller fragments, we can achieve discoupling amongst fragments. Other fragments can still function (to a certain extent) when another fails. The main drawback is a higher communication demand amongst fragments and additional challenges in state management.
+The main goal of the Bulkhead pattern is fault isolation: When breaking up a large application into smaller fragments, we can achieve discoupling amongst fragments. Other fragments can still function (to a certain extent) when another fails. The main drawback is a higher communication demand amongst fragments and additional challenges in state management.\cite{bulkead}
 
 
 
@@ -14,7 +14,7 @@ This ability to tolerate faults is inherently the core of resilience and more im
 
 One drawback of relying on header files is the compile-time limitation. We need to rely on other mechanisms, for actions which are dynamic in nature. Dynamically registering devices, drivers or system calls cannot be done by simply relying on static dependencies. This is where another instance of the bulkhead resilience pattern shines: Introducing dynamic (un-)registration mechanisms and routing.
 
-Take device drivers as an example: It is obvious that a single driver, that accesses all hardware interfaces, memory and interacts with user space all at once is destined to pose a large threat for resilience. This is why a mechanism of routing through the use of Major/Minor device numbers is excellent. The request specifies those numbers, the kernel resolves them to a certain driver and its device and the driver handles the request. Device drivers can dynamically (un-)register themselves from the list of Major/Minor numbers.
+Take device drivers as an example: It is obvious that a single driver, that accesses all hardware interfaces, memory and interacts with user space all at once is destined to pose a large threat for resilience. This is why a mechanism of routing through the use of Major/Minor device numbers is excellent. The request specifies those numbers, the kernel resolves them to a certain driver and its device and the driver handles the request. Device drivers can dynamically (un-)register themselves from the list of Major/Minor numbers. \cite[ch. 3]{Corbet2005}
 
 
 Here we can see how one driver has nothing to do with the other and is operated through the Device Driver Model\cite{nq}, which resolves requests. 

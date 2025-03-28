@@ -8,7 +8,7 @@ This is why the kernel implements a variety of mechanisms to know when faults ar
 
 \section{Oops}
 An Oops is simply an obeservation, that tells the kernel and its users (via logging), that a faulty operation has happened. They are one of the mechanisms to detect and communicate faults within the system. 
-Oopses can have many causes, and the Linux kernel reacts differently to them based on its configuration.
+Oopses can have many causes, and the Linux kernel reacts differently to them based on its configuration.\cite[ch.4, Oops Messages]{Corbet2005}
 
 Most importantly, they serve the purpose of highlighting incorrect behaviour, so that it can be debugged by the kernel developers. An oops by itself does not improve runtime resilience, but they provide a long-term debugging framework that helps developers improve the system over time.
 
@@ -31,9 +31,9 @@ Often, watchdogs are needed in multithreading environments. When multiple proces
 
 Notable watchdogs are:
 \begin{itemize}
-        \item Deadlock Detection: They monitor the resources and the threads, which place locks upon them.
-        \item Hard Lockup Detectors: They detect when a CPU is completely unresponsive.
-        \item Soft Lockup Detectors: They detect, when a CPU is running in kernel mode for too long, not scheduling other user space tasks.
+    \item Deadlock Detection: They monitor the resources and the threads, which place locks upon them. \cite{runtime_locking_correctness}
+    \item Hard Lockup Detectors: They detect when a CPU is completely unresponsive. \cite{soft_hard_lockup}
+        \item Soft Lockup Detectors: They detect, when a CPU is running in kernel mode for too long, not scheduling other user space tasks.\cite{soft_hard_lockup}
 \end{itemize}
 
 \newpage
@@ -48,10 +48,10 @@ Some of the available sanizers are:
         \hline
         Sanizer & Purpose\\
         \hline
-        KASAN (Kernel Address Sanitizer)& Detects use-after-free and out-of-bounds errors\\
-        KMSAN (Kernel Memory Sanitizer) & Detects usage of uninitialized memory \\
-        KCSAN (Kernel Concurrency Sanizer) & Detects race condiditions \\
-        KFENCE (Kernel Electric-Fence) & Detects heap out-of-bounds access, use-after-free and invalid free errors. Its overhead is low enough to be production viable \\
+        KASAN (Kernel Address Sanitizer)& Detects use-after-free and out-of-bounds errors \cite{kasan} \\
+        KMSAN (Kernel Memory Sanitizer) & Detects usage of uninitialized memory \cite{kmsan}\\
+        KCSAN (Kernel Concurrency Sanizer) & Detects race condiditions \cite{kcsan} \\
+        KFENCE (Kernel Electric-Fence) & Detects heap out-of-bounds access, use-after-free and invalid free errors. Its overhead is low enough to be production viable \cite{kfence} \\
         \hline
     \end{tabular}
 \end{table}

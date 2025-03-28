@@ -1,11 +1,11 @@
 \chapter{Operating System Resilience}
 \section{Understanding Resilience}
-Laprie describes resilience as "the persistence of dependability when facing changes", with "dependability" expressing trust in a systems delivery of a service.
+Laprie describes resilience as "the persistence of dependability when facing changes", with "dependability" expressing trust in a systems delivery of a service.\cite{Laprie2008}
 So in simpler terms, resilience is a system's ability to function despite unexpected changes.
 
 The aspect of "unexpected changes" introduces one major difficulty, which is that simply ensuring program correctness does not provide adequate resilience. To formally prove a programs correctness, and thus its ability to not enter any unexpected states, one would have to assume a code executor which is impossible to fail. While modern CPUs and their peripherals are extremely resilient, failures of instruction execution and data integrity do happen. 
 
-Hardware limitations however are simply the scapegoat of choice for an impossible hundred percent resilience. Programming errors and their resulting faults are more common. Especially with a larger codebase, the number of bugs increases linearly \cite{nq}.
+Hardware limitations however are simply the scapegoat of choice for an impossible hundred percent resilience. Programming errors and their resulting faults are more common. Especially with a larger codebase, the number of bugs increases.
 
 And hardware faults do not always result in a failure: RAID setups protect against disk failures, ECC memory insures data integrity and the TCP protocol can detect and react to package loss.
 Similar to how a computer system's hardware is designed to mitigate and react to faults, its operating software should be fault-tolerant too. 
@@ -18,7 +18,7 @@ In the scope of the Linux kernel, and its family of operating systems, we have a
 Linux certainly utilizes architecture specific features to enhance resilience. But it is the systematic abstractions, that enable to achieve resilience across platforms. After all, resilience patterns are decisions at a higher level. They often set run-time rules or introduce additional components, such as caches or queues. 
 
 \section{Categorizing Software faults}
-According to Tanenbaum, any operating system can either be seen as an abtraction for easier programming or a resource manager which distributes the systems capabilities.\cite{nq} Either way, an operating system must provide the following features:
+According to Tanenbaum, any operating system can either be seen as an abtraction for easier programming or a resource manager which distributes the systems capabilities.\cite{tanenbaum2006resource_manager} Either way, an operating system must provide the following features:
 
 \begin{itemize}
 \item Manage Memory
