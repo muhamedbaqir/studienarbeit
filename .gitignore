@@ -256,3 +256,6 @@ $RECYCLE.BIN/
 *.cmd
 modules.order
 Module.symvers
+
+# buildroot output
+output
