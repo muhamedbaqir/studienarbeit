@@ -1,0 +1,51 @@
+--- ./drivers/block/Makefile
++++ ./drivers/block/Makefile
+@@ -34,6 +34,7 @@
+ obj-$(CONFIG_BLK_DEV_DRBD)     += drbd/
+ obj-$(CONFIG_BLK_DEV_RBD)     += rbd.o
+ obj-$(CONFIG_BLK_DEV_PCIESSD_MTIP32XX)	+= mtip32xx/
++obj-$(CONFIG_BLK_RAMDISK)           += ramdisk.o
+ 
+ obj-$(CONFIG_ZRAM) += zram/
+ obj-$(CONFIG_BLK_DEV_RNBD)	+= rnbd/
+--- ./drivers/block/Kconfig
++++ ./drivers/block/Kconfig	
+@@ -413,4 +413,13 @@
+ 
+ source "drivers/block/rnbd/Kconfig"
+ 
++config BLK_RAMDISK
++	tristate "RAM-disk block device (ramdisk)"
++	depends on BLOCK
++	help
++	  A tiny RAM-backed block device for testing. Creates /dev/ramdisk0.
++	  Default size is 16 MiB; override with:
++	    ramdisk.disksize_kb=<KiB>
++	  Say Y to build-in or M for a module.
++
+ endif # BLK_DEV
+--- ./drivers/block/ramdisk.c	
++++ ./drivers/block/ramdisk.c
+@@ -0,0 +1,22 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++
++static int __init ramdisk_init(void)
++{
++    pr_info("Hello RAM disk module loaded!\n");
++    return 0;
++}
++
++static void __exit ramdisk_exit(void)
++{
++    pr_info("Goodbye RAM disk module unloaded!\n");
++}
++
++module_init(ramdisk_init);
++module_exit(ramdisk_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Example");
++MODULE_DESCRIPTION("Minimal hello-world RAM disk module");
