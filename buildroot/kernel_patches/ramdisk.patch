@@ -1,15 +1,6 @@
---- ./drivers/block/Makefile
-+++ ./drivers/block/Makefile
-@@ -34,6 +34,7 @@
- obj-$(CONFIG_BLK_DEV_DRBD)     += drbd/
- obj-$(CONFIG_BLK_DEV_RBD)     += rbd.o
- obj-$(CONFIG_BLK_DEV_PCIESSD_MTIP32XX)	+= mtip32xx/
-+obj-$(CONFIG_BLK_RAMDISK)           += ramdisk.o
- 
- obj-$(CONFIG_ZRAM) += zram/
- obj-$(CONFIG_BLK_DEV_RNBD)	+= rnbd/
---- ./drivers/block/Kconfig
-+++ ./drivers/block/Kconfig	
+diff -Nur /tmp/original_kernel/drivers/block/Kconfig /home/muhamedbaqir/Documents/uni-projects/studienarbeit/buildroot/output/build/linux-6.12.41/drivers/block/Kconfig
+--- ./drivers/block/Kconfig	2025-08-01 10:48:47.000000000 +0200
++++ ./drivers/block/Kconfig	2025-08-15 23:43:31.766820896 +0200
 @@ -413,4 +413,13 @@
  
  source "drivers/block/rnbd/Kconfig"
@@ -24,28 +15,123 @@
 +	  Say Y to build-in or M for a module.
 +
  endif # BLK_DEV
---- ./drivers/block/ramdisk.c	
-+++ ./drivers/block/ramdisk.c
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0
+diff -Nur /tmp/original_kernel/drivers/block/Makefile /home/muhamedbaqir/Documents/uni-projects/studienarbeit/buildroot/output/build/linux-6.12.41/drivers/block/Makefile
+--- ./drivers/block/Makefile	2025-08-01 10:48:47.000000000 +0200
++++ ./drivers/block/Makefile	2025-08-15 23:43:31.766680526 +0200
+@@ -34,6 +34,7 @@
+ obj-$(CONFIG_BLK_DEV_DRBD)     += drbd/
+ obj-$(CONFIG_BLK_DEV_RBD)     += rbd.o
+ obj-$(CONFIG_BLK_DEV_PCIESSD_MTIP32XX)	+= mtip32xx/
++obj-$(CONFIG_BLK_RAMDISK)           += ramdisk.o
+ 
+ obj-$(CONFIG_ZRAM) += zram/
+ obj-$(CONFIG_BLK_DEV_RNBD)	+= rnbd/
+Binary files /tmp/original_kernel/drivers/block/loop.o and /home/muhamedbaqir/Documents/uni-projects/studienarbeit/buildroot/output/build/linux-6.12.41/drivers/block/loop.o differ
+diff -Nur /tmp/original_kernel/drivers/block/ramdisk.c /home/muhamedbaqir/Documents/uni-projects/studienarbeit/buildroot/output/build/linux-6.12.41/drivers/block/ramdisk.c
+--- ./drivers/block/ramdisk.c	1970-01-01 01:00:00.000000000 +0100
++++ ./drivers/block/ramdisk.c	2025-08-16 21:00:52.647427250 +0200
+@@ -0,0 +1,102 @@
++// very_minimal_ramdisk.c
 +#include <linux/module.h>
-+#include <linux/init.h>
 +#include <linux/kernel.h>
++#include <linux/blkdev.h>
++#include <linux/blkdev.h>
++#include <linux/vmalloc.h>
++
++#define RAMDISK_NAME "ramdisk"
++#define RAMDISK_SIZE (16 * 1024 * 1024)  // 16 MB
++
++static int major;
++static struct gendisk *ramdisk;
++static struct request_queue *queue;
++static u8 *ramdisk_data;
++
++static blk_qc_t ramdisk_make_request(struct request_queue *q, struct bio *bio)
++{
++    struct bio_vec bvec;
++    struct bvec_iter iter;
++    void *disk_mem;
++    void *iovec_mem;
++    sector_t sector = bio->bi_iter.bi_sector;
++    unsigned long offset = sector << 9; // sector size = 512
++
++    if (offset + bio->bi_iter.bi_size > RAMDISK_SIZE) {
++        bio_io_error(bio);
++        return BLK_QC_T_NONE;
++    }
++
++    bio_for_each_segment(bvec, bio, iter) {
++        disk_mem = ramdisk_data + offset;
++        iovec_mem = kmap_atomic(bvec.bv_page) + bvec.bv_offset;
++
++        if (bio_data_dir(bio) == READ)
++            memcpy(iovec_mem, disk_mem, bvec.bv_len);
++        else
++            memcpy(disk_mem, iovec_mem, bvec.bv_len);
++
++        kunmap_atomic(iovec_mem);
++        offset += bvec.bv_len;
++    }
++
++    bio_endio(bio);
++    return BLK_QC_T_NONE;
++}
 +
 +static int __init ramdisk_init(void)
 +{
-+    pr_info("Hello RAM disk module loaded!\n");
++    // allocate RAM
++    ramdisk_data = vzalloc(RAMDISK_SIZE);
++    if (!ramdisk_data)
++        return -ENOMEM;
++
++    // setup queue
++    queue = blk_alloc_queue(GFP_KERNEL);
++    if (!queue)
++        goto out_free;
++    blk_queue_make_request(queue, ramdisk_make_request);
++
++    // register block device
++    major = register_blkdev(0, RAMDISK_NAME);
++    if (major < 0)
++        goto out_queue;
++
++    ramdisk = alloc_disk(1);
++    if (!ramdisk)
++        goto out_blkdev;
++
++    ramdisk->major = major;
++    ramdisk->first_minor = 0;
++    ramdisk->fops = NULL; // no special file ops
++    ramdisk->queue = queue;
++    sprintf(ramdisk->disk_name, RAMDISK_NAME);
++    set_capacity(ramdisk, RAMDISK_SIZE / 512);
++    add_disk(ramdisk);
++
++    printk(KERN_INFO "ramdisk: registered %d MB device\n", RAMDISK_SIZE / (1024*1024));
 +    return 0;
++
++out_blkdev:
++    unregister_blkdev(major, RAMDISK_NAME);
++out_queue:
++    blk_cleanup_queue(queue);
++out_free:
++    vfree(ramdisk_data);
++    return -ENOMEM;
 +}
 +
 +static void __exit ramdisk_exit(void)
 +{
-+    pr_info("Goodbye RAM disk module unloaded!\n");
++    del_gendisk(ramdisk);
++    put_disk(ramdisk);
++    unregister_blkdev(major, RAMDISK_NAME);
++    blk_cleanup_queue(queue);
++    vfree(ramdisk_data);
++    printk(KERN_INFO "ramdisk: unregistered\n");
 +}
 +
 +module_init(ramdisk_init);
 +module_exit(ramdisk_exit);
 +
 +MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Example");
-+MODULE_DESCRIPTION("Minimal hello-world RAM disk module");
+Binary files /tmp/original_kernel/drivers/block/ramdisk.o and /home/muhamedbaqir/Documents/uni-projects/studienarbeit/buildroot/output/build/linux-6.12.41/drivers/block/ramdisk.o differ
+Binary files /tmp/original_kernel/drivers/block/virtio_blk.o and /home/muhamedbaqir/Documents/uni-projects/studienarbeit/buildroot/output/build/linux-6.12.41/drivers/block/virtio_blk.o differ
