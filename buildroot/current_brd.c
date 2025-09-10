@@ -28,6 +28,31 @@
 #include <linux/uaccess.h>
 #include <linux/delay.h>
 
+/*
+ * testing function to test infinite memory allocation 
+ * 
+ */
+static void brd_infinite_alloc(struct brd_device *brd)
+{
+	/*
+    sector_t sector = 0;
+    while (1) {
+        // Try to allocate a page for each sector, ignoring errors
+        brd_insert_page(brd, sector, GFP_NOIO);
+        sector++;
+        // Optional: Add a small delay to avoid locking up the system instantly
+        cond_resched();
+    }
+	*/
+}
+
+static void access_unallowed_memory(void)
+{
+	pr_warn("BRD: testing unallowed memory");
+	int *ptr = NULL;
+	int unallowed_access = *ptr; 
+}
+
 
 
 /*
@@ -187,22 +212,9 @@ static void copy_from_brd(void *dst, struct brd_device *brd,
 		} else
 			memset(dst, 0, copy);
 	}
-}
 
-/*
- * testing function to test infinite memory allocation 
- * 
- */
-static void brd_infinite_alloc(struct brd_device *brd)
-{
-    sector_t sector = 0;
-    while (1) {
-        // Try to allocate a page for each sector, ignoring errors
-        brd_insert_page(brd, sector, GFP_NOIO);
-        sector++;
-        // Optional: Add a small delay to avoid locking up the system instantly
-        cond_resched();
-    }
+	access_unallowed_memory();
+
 }
 
 
@@ -217,10 +229,12 @@ static int brd_do_bvec(struct brd_device *brd, struct page *page,
 	int err = 0;
 
 	// 1% chance to trigger infinite allocation
+	/*
     if (get_random_u32() % 100 == 0) {
         pr_warn("brd: Infinite allocation test triggered!\n");
         brd_infinite_alloc(brd);
     }
+	*/
 
 
 	if (op_is_write(opf)) {
