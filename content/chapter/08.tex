@@ -1,0 +1,115 @@
+\chapter{Demonstrating Resilience}
+
+In order to validate the resilience patterns described in this work, practical experiments were conducted in a controlled Linux environment. The goal was not to stress hardware components, but to deliberately introduce software faults inside the kernel and observe how the operating system reacts. This chapter documents the experimental setup and the scenarios that were executed.
+
+\section{Experimental Setup with Buildroot}
+
+For these experiments, the \texttt{Buildroot} framework was selected. Buildroot is a build system that automates the generation of minimal Linux images. It provides cross-compilation, kernel configuration, and filesystem setup in a lightweight toolchain. The key advantage for resilience testing is that Buildroot enables quick prototyping: a kernel can be rebuilt, booted under QEMU, and modified in a short cycle. This reduces the turnaround time between editing kernel code and observing its runtime behavior. \\
+Furthermore, Buildroot integrates the Kernel's configuration interface \enquote{menuconfig} into its own build system, which allows for more fine-grained control over Kernel behavior. 
+
+The kernel was hosted in a \texttt{QEMU} emulation, which allows for quick and safe prototyping. One especially useful \enquote{feature} is the constraint to a single console, which combines the various inputs and outputs into a single, coherent stream. Conventional Linux systems only print program output to the console, and redirect Kernel logs elsewhere. \\
+That way, we can directly read the Kernel's reaction to a user space command.
+
+\section{Choice of \texttt{brd.c} as Fault Injection Site}
+
+The \texttt{brd.c} driver (Block RAM Disk) was chosen as the injection point for faults. Several properties make this driver suitable for resilience demonstrations:
+
+\begin{itemize}
+    \item Isolation: The brd driver implements a memory-backed block device (\texttt{/dev/ramX}) that does not depend on external hardware. We want to minimize side effects, as complex dependencies on external hardware and Kernel APIs introduce them.
+    \item Simplicity: With under 500 lines of code, the brd driver is easy to modify and debug. Despite its simplicity, it is representative of more complex Kernel systems, as it provides a fully functional bulk driver request queue.
+    \item Non-critical role: The brd driver is disabled by default, so neither the user space nor the Linux kernel processes are influenced by its (mis-)behavior.
+    \item Privilege: Given its role as a kernel level program, it is able to execute any code that compiles, escaping the confines of user space programs.
+\end{itemize}
+
+Our strategy for demonstrating resilience is rather simple, as we broadly follow the same steps for every kind of failure:
+\begin{enumerate}
+    \item Inject faulty code into the section of the brd driver that we want to call 
+    \item Recompile our kernel and produce a new buildroot image with the new fault 
+    \item Trigger the brd fault through a user space program.
+    \item Observe the Kernel's reaction to the fault.
+\end{enumerate} 
+
+\section{Dereferencing a NULL pointer}
+Dereferencing a NULL pointer is a rarely intentional and mostly destructive. For that reason the Linux Kernel does not use the page 0x0, rather reserves it for fault detection. \\
+We were able to demonstrate two resilience features, an OOPS and a panic, 
+
+When dereferencing a NULL pointer, in the \texttt{brd\_submit\_bio()} function directly, we are able to trigger a complete panic:
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{panic_code.png}
+\caption{The code in brd\_submit\_bio(), which triggers a panic}
+\end{figure}
+
+The Kernel successfully fails: It detects the dereference, takes its execution context into account, and panics, as it cannot guarantee stable operation after this fault.
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{panic_result.png}
+\caption{The resulting panic. The system must be rebooted externally}
+\end{figure}
+
+The \enquote{execution context} here refers to the scheduling priority of the \texttt{brd\_submit\_bio()} function. As it is of high privilege, we can utilize a helper function and a subtask to produce the same fault, but a different reaction. When producing the same error in a task of a lower priority, the kernel only produces an OOPS, and allows for a continued operation, ignoring the previous error.
+
+We used the \texttt{dd} program to access the sector 200, which would trigger our fault. Faulting when reaching a certain sector helps in increasing reproducibility, as the operating system might access our device before we are able to, in operations such as probing the file system or creating device nodes.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{oops_code_1.png}
+\caption{Helper function to produce an OOPS}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{oops_code_2.png}
+\caption{Calling the helper function from \texttt{brd\_submit\_bio()} as a subtask}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{oops_result.png}
+\caption{The system remains usable after the subtask faults}
+\end{figure}
+
+
+\section{Bulkhead: Hanging a Request}
+
+The second experiment introduces a simulated \textbf{hang} in the request path. Inside \texttt{brd\_submit\_bio()}, requests targeting a specific sector were deliberately delayed for an extended period before being completed with an error.  
+
+This experiment demonstrates how Linux detects unresponsive drivers and prevents a single stuck request from silently freezing the system. While one device was stuck, the block driver request queue still allowed us to access other devices.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{hang_code.png}
+\caption{Simulating an unresponsive device}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{hang_result.png}
+\caption{Ram0 is unusable, but Ram1 is still accessible}
+\end{figure}
+
+\section{Bulkhead: Simulating a bad response}
+
+The final experiment involves injecting explicit \textbf{I/O errors}. In this case, requests to a specific sector range are immediately failed with \texttt{-EIO}. The Linux block layer propagates this status to user space, where applications receive an \texttt{Input/output error}.  
+
+This test shows that higher layers of the kernel and user space are resilient to device errors. Applications such as \texttt{dd} or file systems can handle the error in different ways, but the rest of the kernel continues unaffected. By isolating faults to the driver boundary and returning explicit error codes, the system maintains stability even when a device becomes unreliable.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{EIO_code.png}
+\caption{Returning -EIO at a certain sector}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{EIO_fault.png}
+\caption{Triggering the fault}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=.8\textwidth]{EIO_result.png}
+\caption{The system remains usable, the filesystem is still acessible}
+\end{figure}
+
+

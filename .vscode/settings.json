@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "backing-dev.h": "c"
+        "backing-dev.h": "c",
+        "init.h": "c"
     }
 }
