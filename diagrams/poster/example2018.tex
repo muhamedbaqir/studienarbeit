@@ -1,0 +1,101 @@
+\documentclass{beamer}
+\usepackage[orientation=portrait,size=a1,scale=1,debug]{beamerposter}
+\mode<presentation>{\usetheme{MeInBio2018}}
+
+\title[ShortName]{Resilienzmuster im Linux Kernel}
+\author{Muhamedbaqir Al-Rumeil}
+
+\institute[Address]{
+	Duale Hochschule Baden-Württemberg Heidenheim \\
+	Marienstraße 20
+	89518 Heidenheim
+}
+
+
+\begin{document}
+\begin{frame}[t]
+\begin{columns}[t]
+	\begin{column2}
+		\begin{block}{Abstrakt}
+%%%
+%%% Left: ABSTRACT text
+%%%
+Resilienzmuster kommen meistens in verteilten Systemen zum Einsatz, mit dem Ziel die Verfügbarkeit eines Systems zu erhöhen. Eher unüblich sind diese Strategien im Gebiet der Betriebssysteme, geschuldet der Verschiedenheit der beiden Domänen. \\
+Diese Studienarbeit befasst sich mit der Fragestellung, ob ein Transfer zwischen den beiden Bereichen stattfand, am Beispiel der im Linux Kernel implementierten Resilienzmuster. Wir kommen zu dem Ergebnis, dass der Linux Kernel diverse Resilienzstrategien implementiert, welche signifikant durch die quelloffene Arbeitsweise geprägt wurden. 
+
+
+
+		\end{block}
+
+		\begin{block}{Hintergründe}
+%%%
+%%% Left: BACKGROUND text
+%%%
+Resilienz­muster helfen Software­systemen, auch unter Fehlern, Lastspitzen oder Teilausfällen stabil und verfügbar zu bleiben. 
+Typische Ansätze sind etwa Circuit Breaker (Vermeidung von Kettenreaktionen bei Dienstausfällen), Retries mit Backoff (erneutes Ausführen fehlgeschlagener Aufrufe), Bulkheads (Abschirmung von Komponenten) oder Fallbacks (alternative Antworten im Fehlerfall). Durch den gezielten Einsatz solcher Muster können Systeme robuster, selbstheilend und nutzerfreundlicher gestaltet werden. 
+
+		\end{block}
+
+		\begin{block}{Ziele} 
+%%%
+%%% Left: GOALS text
+%%%
+Im Kontrast zu verteilten Systemen, fehlt einem monolithischen System wie dem Linux Kernel die Möglichkeit Funktionalität extern auszulagern, oder hohe Lasten umzulenken. Linux Entwickler haben dennoch die Option, kernelinterne Prozesse durch Resilienzstrategien abzusichern. \\
+Der Linux Kernel dient als treffendes Beispiel für diese Untersuchung, da Quelltext, Diskussionen und Dokumentation transparent einsehbar sind. Desweiteren ist Linux besonders in Domänen erfolgreich, wo Resilienz am höchsten gefordert ist, beispielsweise in Cloud oder eingebetteten Systemen.
+
+Unsere Strategie für die Analyse des Linux Kernels ist folgende:
+\begin{enumerate}
+\item Analyse der Systemstruktur anhand der Kernel Dokumentation und Quelltexte
+\item Interaktionen der Systemkomponenten mit Resilienzmustern abgleichen
+\item Experimentelle Demonstration diverser Fehlerszenarien und die Reaktion des Kernels
+\end{enumerate}
+
+		\end{block}
+
+		%%%
+		%%%\begin{block}{Data}
+%%
+%% Left: DATA text
+%%
+%\lipsum[68]
+		%%%\end{block}
+	\end{column2}
+	\begin{column2}
+		\begin{block}{Ergebnisse} 
+%%%
+%%% Right: MORE DATA text
+%%%
+\small
+\textbf{Bulkhead - Dekomposition} \\
+Der Linux Kernel implementiert in diversen Formen eine systematische Dekomposition, um einzuschränken wie Kernel Submodule einander beeinflussen können. 
+\begin{itemize}
+	\item Kapselung: Durch den Gebrauch von Header-Files wird bereits zur Kompilierzeit eingeschränkt, welche Schnittstellen einem Modul bereitstehen. Die entsprechenden Header Files sind entsprechend der diversen Subsysteme organisiert, sodass Kernel Programme zur Laufzeit einen drastisch reduzierten Handlungsraum haben.
+	\item Trennung der Gerätetreiber: Gerätetreiber stellen den größten Teil des Quelltexts dar und bergen daher ein großes Risiko für Laufzeitfehler. Gerätetreiber des Linux Kernels werden strikt voneinander getrennt, sowohl durch die Ansprache im User Space als auch durch die Abstraktion einer Warteschlange für Anfragen, welche Ein- und Ausgaben strikt trennt.
+\end{itemize}
+
+\textbf{Queue-based Load Leveling} \\
+Durch Warteschlangen in den diversen Subsystemen gelingt es dem Linux Kernel sowohl mit hohen relativen als auch absoluten Lasten umzugehen. Sowohl im Zugriff auf Geräte, als auch im Zugriff auf CPU Leistung werden Anfragen nicht direkt ausgeführt, sondern in einer Warteschlange angehangen.
+
+\textbf{Caching} \\
+Eine weitere Strategie im Umgang mit hohen Lasten ist die Implementierung diverser Cache Mechanismen im Kernel. Lese- und Schreiboperationen werden mit dem Arbeitsspeicher als Cache ausgeführt, und nur sofern nötig tatsächlich persistiert. \\
+Desweiteren geschehen diverse Operationen, welche das Dateisystem und seine Metadaten betreffen, ebenso erst im Arbeitsspeicher.
+
+\textbf{Überwachung} \\
+Der Linux Kernel stellt diverse Programme bereit, um Laufzeitverhalten des Kernels zu überwachen. \\
+Watchdogs können harte und weiche Deadlocks erkennen. Sanitizer können diverse Programmierfehler erkennen (z.B. Kollisionen oder use-after-free), werden aufgrund der Leistungseinbuße meist nur für Entwicklungszwecke benutzt. \\
+Erkannte Fehler resultieren meistens in Warnungen "Oops", oder in kontrollierten Systemabbruch "Panic", je nach Konfiguration des Kernels und Umgebung des erzeugten Fehlers.
+\end{block}
+
+\begin{block}{Experimentelle Ergebnisse}
+Im Rahmen der praktischen Experimente ist es uns gelungen einen existierenden Gerätetreiber für ein "Block Ram Device" so zu modifizieren, um diverse Fehlerszenarien provozieren zu können und die Reaktion des Kernels zu beobachten. \\
+Wir demonstrierten die folgenden Szenarien: 
+\begin{enumerate}
+	\item Gerätetreiber hängt endlos: Andere Geräte unter dem selben Treiber bleiben ansprechbar
+	\item Gerätetreiber gibt einen Fehler zurück: andere Treiber bleiben unbeeinflusst
+	\item Ein NULL Zeiger wird dereferenziert: In einer sub-routine wird der Fehler toleriert, im Kontext der Abwicklung ein IO-Anfrage, deutet der Kernel diesen Fehler als fatal und verursacht eine Panik.
+\end{enumerate}
+\end{block}
+\end{column2}
+\end{columns}
+\end{frame}
+\end{document}
