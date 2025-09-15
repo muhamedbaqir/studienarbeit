@@ -1,12 +1,12 @@
 \chapter{Queue-Based Load Leveling}
-The Queue-based load leveling pattern aims to prevent sudden utilization spikes by not storing requests in an intermediate queue, rather than directly executing them. The benefits here are that a resource, cannot be blocked by requests, rather it decides when to process requests. \cite{queue_based_load_levelling}
+The Queue-based load leveling pattern aims to prevent sudden utilization spikes by storing requests in an intermediate queue, rather than directly executing them. The benefits here are that a resource, cannot be blocked by requests, rather it decides when to process requests. \cite{queue_based_load_levelling}
 This increases resilience by allowing subsystems to not be exposed to sudden spikes in demands.
 
 The main resources of any computer system are peripherals(Disks, Networking, Devices) and Computation Resources(CPU, Memory). 
 This resilience pattern shines for operations, which are blocking and asynchronous in nature. It is no surprise, that IO operations and blocking computations are bound to benefit from queue-based load leveling.
 
 \section{IO Operations}
-In the Linux Kernel, all forms of IO are abstracted as either Bulk or Character Devices. Character devices read a stream of bytes and are commonly abstractions for Network cards, HIDs. Bulk devices on the other hand work with blocks of data, used for large Storage.
+In the Linux Kernel, all forms of IO are abstracted as either Bulk or Character Devices. Character devices read a stream of bytes and are commonly abstractions for Network cards, human interface devices (HIDs). Bulk devices on the other hand work with blocks of data, used for large Storage.
 Here it is notable that the Linux Kernel is a macro-kernel and all device drivers run in kernel space. This means that the processes of device drivers directly affect Kernel resilience.
 
 When considering their crucial role, high performance demands and the fact that they make up most of the Kernel code, it becomes clear that device drivers are key to high resilience. How user space interacts with them and how they in turn affect the running system will be analysed in the following.

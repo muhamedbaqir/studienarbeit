@@ -8,7 +8,7 @@ The main goal of the Bulkhead pattern is fault isolation: When breaking up a lar
 \section{Decomposition}
 These \enquote{fragments} can be anything really. Microservices, Components or Processes can serve this function. They all function by hiding complex logic behind simple interfaces, for other services to use. 
 
-The main mechanism of decompostition is rooted into the C language: Exploiting functions and static data (configuration and state) is done using header files. Every subsystem exports an set interface to interact with it and make use of its functions. Of course aside from reusing code, this enables Kernel subsystems to integrate error handling when calling external methods, and thus tolerate faults of other modules.
+The main mechanism of decompostition is rooted into the C language: Exploiting functions and static data (configuration and state) is done using header files. Every subsystem exports an set interface to interact with it and make use of its functions. Of course aside from reusing code, this enables Kernel subsystems to include error handling by defining domain specifc error codes (e.g. -ENOMEM or -EIO), and how to react to them.
 
 This ability to tolerate faults is inherently the core of resilience and more importantly, enables a divide-and-conquer approach to further protect our system. By breaking up the Linux Kernel, developers can make use of other resilience patterns, given their domain specific challenges.
 

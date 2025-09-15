@@ -20,7 +20,7 @@ Oopses arise from mainly two forms of exceptions:
 \end{itemize}
 
 An oops is the prime example of fault tolerance: 
-The kernel simply processes the fault that happens, yet continues to operate.
+When an oops occurs, the fault is logged, yet the kernel assumes that safe operation can be continued and does not terminate any kernel processes.
 
 On a side note, the kernel is implementing a form of the fail fast resilience pattern by failing after N oopses. That pattern will be further explored in its respektive chapter.
 

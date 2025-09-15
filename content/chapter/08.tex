@@ -4,7 +4,7 @@ In order to validate the resilience patterns described in this work, practical e
 
 \section{Experimental Setup with Buildroot}
 
-For these experiments, the \texttt{Buildroot} framework was selected. Buildroot is a build system that automates the generation of minimal Linux images. It provides cross-compilation, kernel configuration, and filesystem setup in a lightweight toolchain. The key advantage for resilience testing is that Buildroot enables quick prototyping: a kernel can be rebuilt, booted under QEMU, and modified in a short cycle. This reduces the turnaround time between editing kernel code and observing its runtime behavior. \\
+For these experiments, the \texttt{Buildroot}\cite{buildroot} framework was selected. Buildroot is a build system that automates the generation of minimal Linux images. It provides cross-compilation, kernel configuration, and filesystem setup in a lightweight toolchain. The key advantage for resilience testing is that Buildroot enables quick prototyping: a kernel can be rebuilt, booted under QEMU, and modified in a short cycle. This reduces the turnaround time between editing kernel code and observing its runtime behavior. \\
 Furthermore, Buildroot integrates the Kernel's configuration interface \enquote{menuconfig} into its own build system, which allows for more fine-grained control over Kernel behavior. 
 
 The kernel was hosted in a \texttt{QEMU} emulation, which allows for quick and safe prototyping. One especially useful \enquote{feature} is the constraint to a single console, which combines the various inputs and outputs into a single, coherent stream. Conventional Linux systems only print program output to the console, and redirect Kernel logs elsewhere. \\

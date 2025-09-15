@@ -5,13 +5,13 @@ Similar to how the kernel shuts down user space processes, it can decide to term
 \section{Panic}
 To terminate, the Kernel provides the \enquote{panic} function, which terminates the kernel on all CPUs. \cite{panic}
 
-A panic can occur as soon as during the boot process, when the \enquote{initramfs} gets corrupted. In the further kernel operation, the panic function can be called by all kernel modules. 
+A panic can occur as soon as during the boot process, when the \enquote{initramfs} - the initial filesystem in RAM - gets corrupted. In the further kernel operation, the panic function can be called by all kernel modules. 
 Furthermore, the kernel can be configured to panic on certain conditions, e.g. when a certain number of oopses has been reached. For debugging purposes, the kernel can be configured to panic on every oops.
 
 When the panic function was called, it firstly logs an error, dumps the stack trace and can either reboot or hang.
 When the system hangs, it leaves administrators time to analyse the logs. 
 
 Setting low thresholds for a kernel panic benefits resilience, because we want to terminate a potentially corrupted kernel as soon as possible.
-As described previously, the kernel and its subsequent user space applciations often operate in caches, and only indirectly persist data to disk. Operating on fleeting data requires vast consistency considerations, and one of them is a kill switch for all operations.
+As described previously, the kernel and its subsequent user space applciations often operate in caches, and only indirectly persist data to disk. Operating on fleeting data requires vast consistency considerations, and one of them is a kill switch - a controlled termination - for all operations.
 
 
